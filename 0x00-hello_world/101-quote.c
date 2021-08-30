@@ -14,10 +14,10 @@ int main(void)
 	long syscall = 1;
 	long ret = 0;
 	__asm__("syscall"
-		: "=a"(ret)
-		: "a"(syscall),
-		 "D"(fd),
-		 "S"(s),
-		 "d"(I));
+		: "=a" (ret)
+		: "a" (syscall),
+		 "D" (fd),
+		 "S" (s),
+		 "d" (I));
 	return (1);
 }
