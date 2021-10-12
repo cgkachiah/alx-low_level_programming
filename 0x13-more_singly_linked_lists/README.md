@@ -1,1 +1,2 @@
-# This is a mandatory file for all ALX Projects
+# This alx low level programming repository
+** C programming challenges **
