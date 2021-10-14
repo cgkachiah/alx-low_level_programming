@@ -1,70 +1,61 @@
 #include "lists.h"
-/**
- *add_nodeaddr - A function that mallocs a new space for a list
- *@head: A double pointer that points to my second list header, head_2.
- *addr
- *add_nodeaddr
- */
-addr_list *add_nodeaddr(addr_list **head, const void *addr)
-{
-addr_list *new_node;
+#include <stdlib.h>
+#include <stdio.h>
 
-new_node = malloc(sizeof(addr_list));
-if (new_node == NULL)
-{
-free_listaddr(*head);
-exit(98);
-}
-new_node->addr = addr;
-new_node->next = *head;
-*head = new_node;
-return (new_node);
-}
 /**
- *free_listaddr - a function that frees a linked list
- *@head: a pointer variable that points to the start of a newly made list
+ * _r - reallocates memory for an array of pointers
+ * to the nodes in a linked list
+ * @list: the old list to append
+ * @size: size of the new list (always one more than the old list)
+ * @new: new node to add to the list
+ *
+ * Return: pointer to the new list
  */
-void free_listaddr(addr_list *head)
+const listint_t **_r(const listint_t **list, size_t size, const listint_t *new)
 {
-addr_list *current_node;
-while (head != NULL)
-{
-current_node = head;
-head = head->next;
-free(current_node);
+	const listint_t **newlist;
+	size_t i;
+
+	newlist = malloc(size * sizeof(listint_t *));
+	if (newlist == NULL)
+	{
+		free(list);
+		exit(98);
+	}
+	for (i = 0; i < size - 1; i++)
+		newlist[i] = list[i];
+	newlist[i] = new;
+	free(list);
+	return (newlist);
 }
-}
+
 /**
- *print_listint_safe - a function that prints the node and the
- *number within a node,
- *Return: the number of nodes
+ * print_listint_safe - prints a listint_t linked list.
+ * @head: pointer to the start of the list
+ *
+ * Return: the number of nodes in the list
  */
 size_t print_listint_safe(const listint_t *head)
 {
-addr_list *current_NewNode;
-addr_list *head_2;
-size_t i;
+	size_t i, num = 0;
+	const listint_t **list = NULL;
 
-i = 0;
-head_2 = NULL;
-while (head != NULL)
-{
-current_NewNode = head_2;
-while (current_NewNode != NULL)
-{
-if (head == current_NewNode->addr)
-{
-printf("->[%p] %d\n", (void *)head, head->n);
-free_listaddr(head_2);
-return (i);
-}
-current_NewNode = current_NewNode->next;
-}
-printf("[%p] %d\n", (void *)head, head->n);
-add_nodeaddr(&head_2, head);
-head = head->next;
-i++;
-}
-free_listaddr(head_2);
-return (i);
+	while (head != NULL)
+	{
+		for (i = 0; i < num; i++)
+		{
+			if (head == list[i])
+			{
+				printf("-> [%p] %d\n", (void *)head, head->n);
+				free(list);
+				return (num);
+			}
+		}
+		num++;
+		list = _r(list, num, head);
+		printf("[%p] %d\n", (void *)head, head->n);
+		head = head->next;
+	}
+	free(list);
+	return (num);
 }
